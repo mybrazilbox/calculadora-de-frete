@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Shipping Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#009C3B;font-family:'DM Serif Display','Georgia',serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px 16px}
+  .sans{font-family:'IBM Plex Sans','Segoe UI',sans-serif}
+  .field{width:100%;background:#fff;border:1.5px solid #FFDF00;border-radius:8px;padding:11px 13px;font-size:14px;font-family:'IBM Plex Sans',sans-serif;color:#002776;transition:border-color .18s;outline:none}
+  .field:focus{border-color:#002776}
+  .field::-webkit-outer-spin-button,.field::-webkit-inner-spin-button{-webkit-appearance:none}
+  .pill{display:inline-flex;border:2px solid #FFDF00;border-radius:20px;overflow:hidden}
+  .pill-btn{padding:5px 14px;font-size:12px;font-family:'IBM Plex Sans',sans-serif;font-weight:500;cursor:pointer;border:none;transition:background .15s,color .15s}
+  .pill-btn.active{background:#002776;color:#FFDF00}
+  .pill-btn:not(.active){background:#fff;color:#002776}
+  .go-btn{width:100%;background:#FFDF00;border:none;border-radius:8px;padding:14px;color:#002776;font-family:'IBM Plex Sans',sans-serif;font-weight:700;font-size:14px;letter-spacing:.03em;cursor:pointer;transition:background .15s,transform .12s}
+  .go-btn:hover:not(:disabled){background:#e5c800;transform:translateY(-1px)}
+  .go-btn:disabled{background:#d4c96a;color:#8a8a50;cursor:not-allowed}
+  .reset-btn{width:100%;background:transparent;border:1.5px solid #FFDF00;border-radius:8px;padding:11px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:#009C3B;cursor:pointer;margin-top:10px;transition:border-color .15s,color .15s}
+  .reset-btn:hover{border-color:#fff;color:#002776}
+  .svc-card{background:#fff;border:2px solid #FFDF00;border-radius:10px;padding:16px;margin-bottom:12px;transition:border-color .2s,box-shadow .2s}
+  .svc-card:hover{border-color:#002776;box-shadow:0 2px 12px rgba(0,39,118,.15)}
+  .dim-notice{background:#fffbe6;border:1px solid #FFDF00;border-radius:7px;padding:10px 13px;font-size:12px;font-family:'IBM Plex Sans',sans-serif;color:#002776;margin-bottom:14px;line-height:1.6}
+  .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #e8f5ee}
+  .row:last-child{border-bottom:none}
+  .ineligible{opacity:.5;filter:grayscale(30%)}
+  .ineligible-banner{font-size:11px;color:#c0392b;font-family:'IBM Plex Sans',sans-serif;margin-top:4px;font-style:italic}
+  .wrap{width:100%;max-width:430px}
+  .card{background:#fff;border:2px solid #FFDF00;border-radius:14px;padding:24px}
+  .label{display:block;font-size:11px;font-weight:600;color:#002776;letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px;font-family:'IBM Plex Sans',sans-serif}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .rel{position:relative}
+  .unit-badge{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;color:#009C3B;font-family:'IBM Plex Sans',sans-serif}
+  .dollar-badge{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:600;color:#009C3B;font-family:'IBM Plex Sans',sans-serif}
+  .lbl-badge{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:#009C3B;font-family:'IBM Plex Sans',sans-serif}
+  #results{margin-top:24px;display:none}
+  .divider{height:1px;background:linear-gradient(to right,transparent,#e8e4de,transparent);margin-bottom:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Header -->
+  <div style="margin-bottom:24px">
+    <h1 style="font-size:26px;color:#FFDF00;letter-spacing:-0.02em;text-shadow:0 1px 4px rgba(0,0,0,.2);margin-bottom:8px">Shipping Calculator</h1>
+    <div style="background:rgba(0,0,0,.2);border:1px solid #FFDF00;border-radius:8px;padding:10px 14px">
+      <p class="sans" style="font-size:12px;color:#FFDF00;font-weight:600;margin-bottom:2px">⚠️ Estimate Only</p>
+      <p class="sans" style="font-size:12px;color:#d4f5e0;line-height:1.5">This is only an estimate. The actual shipping quote will be shared with you once the item is purchased.</p>
+    </div>
+  </div>
+
+  <!-- Main card -->
+  <div class="card">
+
+    <!-- Unit toggle -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <span class="sans" style="font-size:12px;font-weight:600;color:#002776;letter-spacing:.05em;text-transform:uppercase">Units</span>
+      <div class="pill">
+        <button class="pill-btn active" id="btn-imperial" onclick="setUnit('imperial')">lbs / in</button>
+        <button class="pill-btn" id="btn-metric" onclick="setUnit('metric')">kg / cm</button>
+      </div>
+    </div>
+
+    <!-- Weight -->
+    <div style="margin-bottom:14px">
+      <label class="label">Actual Weight (<span id="wLabel">lbs</span>)</label>
+      <div class="rel">
+        <input class="field" type="number" min="0" step="0.1" id="weight" placeholder="e.g. 1.0" oninput="clearResults()" style="padding-right:46px"/>
+        <span class="unit-badge" id="wBadge">lbs</span>
+      </div>
+    </div>
+
+    <!-- Dimensions -->
+    <div style="margin-bottom:14px">
+      <label class="label">Package Dimensions (<span id="dLabel">in</span>) <span style="color:#009C3B;font-weight:400;text-transform:none">— for dimensional weight</span></label>
+      <div class="grid3">
+        <div class="rel"><input class="field" type="number" min="0" step="0.1" id="length" placeholder="L" oninput="clearResults()" style="padding-left:28px"/><span class="lbl-badge">L</span></div>
+        <div class="rel"><input class="field" type="number" min="0" step="0.1" id="width"  placeholder="W" oninput="clearResults()" style="padding-left:28px"/><span class="lbl-badge">W</span></div>
+        <div class="rel"><input class="field" type="number" min="0" step="0.1" id="height" placeholder="H" oninput="clearResults()" style="padding-left:28px"/><span class="lbl-badge">H</span></div>
+      </div>
+      <p class="sans" style="font-size:11px;color:#009C3B;margin-top:5px">USPS uses L×W×H ÷ 166 for dim weight · Billable = whichever is greater</p>
+    </div>
+
+    <!-- State -->
+    <div style="margin-bottom:14px">
+      <label class="label">Destination State</label>
+      <select class="field" id="state" onchange="clearResults()">
+        <option value="">Select a state…</option>
+        <option>Acre</option><option>Alagoas</option><option>Amapá</option><option>Amazonas</option>
+        <option>Bahia</option><option>Ceará</option><option>Distrito Federal</option>
+        <option>Espírito Santo</option><option>Goiás</option><option>Maranhão</option>
+        <option>Mato Grosso</option><option>Mato Grosso do Sul</option><option>Minas Gerais</option>
+        <option>Pará</option><option>Paraíba</option><option>Paraná</option>
+        <option>Pernambuco</option><option>Piauí</option><option>Rio de Janeiro</option>
+        <option>Rio Grande do Norte</option><option>Rio Grande do Sul</option>
+        <option>Rondônia</option><option>Roraima</option><option>Santa Catarina</option>
+        <option>São Paulo</option><option>Sergipe</option><option>Tocantins</option>
+      </select>
+      <p class="sans" style="font-size:11px;color:#009C3B;margin-top:5px">USPS treats all of Brazil as one pricing group</p>
+    </div>
+
+    <!-- Declared value -->
+    <div style="margin-bottom:20px">
+      <label class="label">Declared Value (USD) <span style="color:#009C3B;font-weight:400;text-transform:none">— for import tax estimate</span></label>
+      <div class="rel">
+        <input class="field" type="number" min="0" step="1" id="declared" placeholder="e.g. 120" oninput="clearResults()" style="padding-left:28px"/>
+        <span class="dollar-badge">$</span>
+      </div>
+    </div>
+
+    <button class="go-btn" id="calcBtn" onclick="calculate()" disabled>CALCULATE SHIPPING</button>
+
+    <!-- Results -->
+    <div id="results">
+      <div class="divider"></div>
+      <div id="dimNotice"></div>
+      <div id="taxNotice"></div>
+      <p class="sans" style="font-size:11px;font-weight:600;color:#002776;letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px">Shipping Options</p>
+      <div id="serviceCards"></div>
+      <p class="sans" style="font-size:11px;color:#009C3B;margin-top:8px;text-align:center;line-height:1.6">
+        Retail USPS rates · Service fee is your charge · Import tax subject to Brazilian customs discretion
+      </p>
+    </div>
+
+    <button class="reset-btn" onclick="reset()">Reset</button>
+  </div>
+
+  <p class="sans" style="font-size:11px;color:#d4f5e0;text-align:center;margin-top:14px">
+    USPS rates effective July 13 2025 · Brazil Receita Federal §50 threshold
+  </p>
+</div>
+
+<script>
+const FCPIS = [{maxOz:8,price:23.14},{maxOz:32,price:35.51},{maxOz:48,price:53.58},{maxOz:64,price:62.93}];
+const PMI   = [{maxLbs:1,price:40.50},{maxLbs:2,price:50.25},{maxLbs:3,price:59.80},{maxLbs:4,price:69.00},{maxLbs:5,price:78.50},{maxLbs:10,price:115.00},{maxLbs:20,price:185.00},{maxLbs:70,price:390.00}];
+const PMEI  = [{maxLbs:1,price:62.70},{maxLbs:2,price:72.00},{maxLbs:3,price:82.50},{maxLbs:4,price:93.00},{maxLbs:5,price:104.00},{maxLbs:10,price:155.00},{maxLbs:20,price:250.00},{maxLbs:70,price:520.00}];
+
+let currentUnit = 'imperial';
+
+function setUnit(u) {
+  currentUnit = u;
+  document.getElementById('btn-imperial').classList.toggle('active', u==='imperial');
+  document.getElementById('btn-metric').classList.toggle('active', u==='metric');
+  const wl = u==='imperial'?'lbs':'kg', dl = u==='imperial'?'in':'cm';
+  document.getElementById('wLabel').textContent = wl;
+  document.getElementById('wBadge').textContent = wl;
+  document.getElementById('dLabel').textContent = dl;
+  clearResults();
+}
+
+function val(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+function toImperial() {
+  const w=val('weight'),l=val('length'),wi=val('width'),h=val('height');
+  if (currentUnit==='metric') return {weightLbs:w*2.20462,lengthIn:l/2.54,widthIn:wi/2.54,heightIn:h/2.54};
+  return {weightLbs:w,lengthIn:l,widthIn:wi,heightIn:h};
+}
+
+function lookupFCPIS(oz) {
+  if (oz>64) return null;
+  for (const t of FCPIS) if (oz<=t.maxOz) return t.price;
+  return null;
+}
+function lookup(table,lbs) {
+  for (const t of table) if (lbs<=t.maxLbs) return t.price;
+  return table[table.length-1].price;
+}
+
+document.getElementById('weight').addEventListener('input', function() {
+  document.getElementById('calcBtn').disabled = !(parseFloat(this.value) > 0);
+});
+
+function clearResults() {
+  document.getElementById('results').style.display = 'none';
+  const w = parseFloat(document.getElementById('weight').value)||0;
+  document.getElementById('calcBtn').disabled = w <= 0;
+}
+
+function calculate() {
+  const {weightLbs,lengthIn,widthIn,heightIn} = toImperial();
+  if (!weightLbs || weightLbs<=0) return;
+
+  const actualOz = weightLbs*16;
+  const dimLbs = (lengthIn&&widthIn&&heightIn) ? (lengthIn*widthIn*heightIn)/166 : 0;
+  const billLbs = Math.max(weightLbs,dimLbs);
+  const billOz = billLbs*16;
+  const dimApplied = dimLbs>weightLbs && dimLbs>0;
+
+  const decVal = val('declared');
+  const importTax = decVal>50 ? (decVal-50)*0.6 : 0;
+
+  const fcpisPrice = lookupFCPIS(billOz);
+  const pmiPrice   = lookup(PMI, billLbs);
+  const pmeiPrice  = lookup(PMEI, billLbs);
+
+  // Dim notice
+  let dimHTML = '';
+  if (dimApplied) {
+    dimHTML = `<div class="dim-notice">⚠️ <strong>Dimensional weight applies.</strong><br>Actual: ${weightLbs.toFixed(2)} lbs &nbsp;·&nbsp; Dim weight: ${dimLbs.toFixed(2)} lbs<br><strong>Billable weight: ${billLbs.toFixed(2)} lbs (${billOz.toFixed(1)} oz)</strong></div>`;
+  } else if (dimLbs>0) {
+    dimHTML = `<div class="dim-notice" style="background:#f0f8f0;border-color:#b0d8b0;color:#1a5c1a">✓ Actual weight (${weightLbs.toFixed(2)} lbs) is greater than dim weight (${dimLbs.toFixed(2)} lbs). No surcharge.</div>`;
+  }
+  document.getElementById('dimNotice').innerHTML = dimHTML;
+
+  // Tax notice
+  let taxHTML = '';
+  if (decVal>0) {
+    taxHTML = importTax>0
+      ? `<div class="dim-notice" style="background:#fff8f0;border-color:#f0d0a0;color:#7a4400">🏛️ Brazil import tax: 60% on $${(decVal-50).toFixed(0)} above the $50 threshold = $${importTax.toFixed(2)}</div>`
+      : `<div class="dim-notice" style="background:#f0f8f0;border-color:#b0d8b0;color:#1a5c1a">✓ Declared value under $50 — no Brazilian import tax</div>`;
+  }
+  document.getElementById('taxNotice').innerHTML = taxHTML;
+
+  // Service cards
+  const services = [
+    {name:'First-Class Package Intl', base:fcpisPrice, days:'2–4 weeks', eligible:fcpisPrice!==null,
+     note: billOz>64?'Not eligible — package exceeds 4 lbs (64 oz)':'Max 4 lbs · Under $400 value · Most economical'},
+    {name:'Priority Mail International', base:pmiPrice, days:'6–10 business days', eligible:true, note:'Up to 70 lbs · Includes $200 insurance'},
+    {name:'Priority Mail Express Intl',  base:pmeiPrice, days:'3–5 business days', eligible:true, note:'Fastest · Money-back guarantee · Starts at $62.70'},
+  ];
+
+  let cardsHTML = '';
+  for (const svc of services) {
+    const total = (svc.base||0) + importTax;
+    cardsHTML += `
+    <div class="svc-card${!svc.eligible?' ineligible':''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+        <div>
+          <div class="sans" style="font-size:14px;font-weight:600;color:#002776">${svc.name}</div>
+          <div class="sans" style="font-size:11px;color:#009C3B;margin-top:2px">${svc.days}</div>
+          ${!svc.eligible?`<div class="ineligible-banner">${svc.note}</div>`:''}
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:20px;color:#009C3B;font-weight:bold;letter-spacing:-0.02em">$${total.toFixed(2)}</div>
+          <div class="sans" style="font-size:10px;color:#009C3B">total est.</div>
+        </div>
+      </div>
+      ${svc.eligible?`
+      <div style="border-top:1px solid #e8f5ee;padding-top:8px">
+        <div class="row"><span class="sans" style="font-size:12px;color:#009C3B">USPS shipping</span><span class="sans" style="font-size:12px;font-weight:500;color:#002776">$${svc.base.toFixed(2)}</span></div>
+        ${importTax>0?`<div class="row"><span class="sans" style="font-size:12px;color:#009C3B">Import tax (est.)</span><span class="sans" style="font-size:12px;font-weight:500;color:#FFDF00;background:#002776;padding:1px 7px;border-radius:4px">$${importTax.toFixed(2)}</span></div>`:''}
+        <p class="sans" style="font-size:11px;color:#009C3B;margin-top:7px;font-style:italic">${svc.note}</p>
+      </div>`:''}
+    </div>`;
+  }
+  document.getElementById('serviceCards').innerHTML = cardsHTML;
+  document.getElementById('results').style.display = 'block';
+}
+
+function reset() {
+  ['weight','length','width','height','declared'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('state').value='';
+  document.getElementById('results').style.display='none';
+  document.getElementById('calcBtn').disabled=true;
+}
+</script>
+</body>
+</html>
