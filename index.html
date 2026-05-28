@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Shipping Calculator</title>
+<title>Calculadora de Frete</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -43,52 +43,52 @@
 <body>
 <div class="wrap">
 
-  <!-- Header -->
+  <!-- Cabeçalho -->
   <div style="margin-bottom:24px">
-    <h1 style="font-size:26px;color:#FFDF00;letter-spacing:-0.02em;text-shadow:0 1px 4px rgba(0,0,0,.2);margin-bottom:8px">Shipping Calculator</h1>
+    <h1 style="font-size:26px;color:#FFDF00;letter-spacing:-0.02em;text-shadow:0 1px 4px rgba(0,0,0,.2);margin-bottom:8px">Calculadora de Frete</h1>
     <div style="background:rgba(0,0,0,.2);border:1px solid #FFDF00;border-radius:8px;padding:10px 14px">
-      <p class="sans" style="font-size:12px;color:#FFDF00;font-weight:600;margin-bottom:2px">⚠️ Estimate Only</p>
-      <p class="sans" style="font-size:12px;color:#d4f5e0;line-height:1.5">This is only an estimate. The actual shipping quote will be shared with you once the item is purchased.</p>
+      <p class="sans" style="font-size:12px;color:#FFDF00;font-weight:600;margin-bottom:2px">⚠️ Apenas Estimativa</p>
+      <p class="sans" style="font-size:12px;color:#d4f5e0;line-height:1.5">Este é apenas um valor estimado. O frete real será informado após a confirmação do pedido.</p>
     </div>
   </div>
 
-  <!-- Main card -->
+  <!-- Card principal -->
   <div class="card">
 
-    <!-- Unit toggle -->
+    <!-- Unidade de medida -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <span class="sans" style="font-size:12px;font-weight:600;color:#002776;letter-spacing:.05em;text-transform:uppercase">Units</span>
+      <span class="sans" style="font-size:12px;font-weight:600;color:#002776;letter-spacing:.05em;text-transform:uppercase">Unidade</span>
       <div class="pill">
-        <button class="pill-btn active" id="btn-imperial" onclick="setUnit('imperial')">lbs / in</button>
+        <button class="pill-btn active" id="btn-imperial" onclick="setUnit('imperial')">lbs / pol</button>
         <button class="pill-btn" id="btn-metric" onclick="setUnit('metric')">kg / cm</button>
       </div>
     </div>
 
-    <!-- Weight -->
+    <!-- Peso -->
     <div style="margin-bottom:14px">
-      <label class="label">Actual Weight (<span id="wLabel">lbs</span>)</label>
+      <label class="label">Peso Real (<span id="wLabel">lbs</span>)</label>
       <div class="rel">
-        <input class="field" type="number" min="0" step="0.1" id="weight" placeholder="e.g. 1.0" oninput="clearResults()" style="padding-right:46px"/>
+        <input class="field" type="number" min="0" step="0.1" id="weight" placeholder="ex: 1.0" oninput="clearResults()" style="padding-right:46px"/>
         <span class="unit-badge" id="wBadge">lbs</span>
       </div>
     </div>
 
-    <!-- Dimensions -->
+    <!-- Dimensões -->
     <div style="margin-bottom:14px">
-      <label class="label">Package Dimensions (<span id="dLabel">in</span>) <span style="color:#009C3B;font-weight:400;text-transform:none">— for dimensional weight</span></label>
+      <label class="label">Dimensões da Embalagem (<span id="dLabel">pol</span>) <span style="color:#009C3B;font-weight:400;text-transform:none">— para peso dimensional</span></label>
       <div class="grid3">
-        <div class="rel"><input class="field" type="number" min="0" step="0.1" id="length" placeholder="L" oninput="clearResults()" style="padding-left:28px"/><span class="lbl-badge">L</span></div>
-        <div class="rel"><input class="field" type="number" min="0" step="0.1" id="width"  placeholder="W" oninput="clearResults()" style="padding-left:28px"/><span class="lbl-badge">W</span></div>
-        <div class="rel"><input class="field" type="number" min="0" step="0.1" id="height" placeholder="H" oninput="clearResults()" style="padding-left:28px"/><span class="lbl-badge">H</span></div>
+        <div class="rel"><input class="field" type="number" min="0" step="0.1" id="length" placeholder="C" oninput="clearResults()" style="padding-left:28px"/><span class="lbl-badge">C</span></div>
+        <div class="rel"><input class="field" type="number" min="0" step="0.1" id="width"  placeholder="L" oninput="clearResults()" style="padding-left:28px"/><span class="lbl-badge">L</span></div>
+        <div class="rel"><input class="field" type="number" min="0" step="0.1" id="height" placeholder="A" oninput="clearResults()" style="padding-left:28px"/><span class="lbl-badge">A</span></div>
       </div>
-      <p class="sans" style="font-size:11px;color:#009C3B;margin-top:5px">USPS uses L×W×H ÷ 166 for dim weight · Billable = whichever is greater</p>
+      <p class="sans" style="font-size:11px;color:#009C3B;margin-top:5px">USPS usa C×L×A ÷ 166 para peso dimensional · Cobrável = o maior entre os dois</p>
     </div>
 
-    <!-- State -->
+    <!-- Estado -->
     <div style="margin-bottom:14px">
-      <label class="label">Destination State</label>
+      <label class="label">Estado de Destino</label>
       <select class="field" id="state" onchange="clearResults()">
-        <option value="">Select a state…</option>
+        <option value="">Selecione um estado…</option>
         <option>Acre</option><option>Alagoas</option><option>Amapá</option><option>Amazonas</option>
         <option>Bahia</option><option>Ceará</option><option>Distrito Federal</option>
         <option>Espírito Santo</option><option>Goiás</option><option>Maranhão</option>
@@ -99,37 +99,37 @@
         <option>Rondônia</option><option>Roraima</option><option>Santa Catarina</option>
         <option>São Paulo</option><option>Sergipe</option><option>Tocantins</option>
       </select>
-      <p class="sans" style="font-size:11px;color:#009C3B;margin-top:5px">USPS treats all of Brazil as one pricing group</p>
+      <p class="sans" style="font-size:11px;color:#009C3B;margin-top:5px">O USPS trata todo o Brasil como um único grupo de preço</p>
     </div>
 
-    <!-- Declared value -->
+    <!-- Valor declarado -->
     <div style="margin-bottom:20px">
-      <label class="label">Declared Value (USD) <span style="color:#009C3B;font-weight:400;text-transform:none">— for import tax estimate</span></label>
+      <label class="label">Valor Declarado (USD) <span style="color:#009C3B;font-weight:400;text-transform:none">— para estimativa de imposto de importação</span></label>
       <div class="rel">
-        <input class="field" type="number" min="0" step="1" id="declared" placeholder="e.g. 120" oninput="clearResults()" style="padding-left:28px"/>
+        <input class="field" type="number" min="0" step="1" id="declared" placeholder="ex: 120" oninput="clearResults()" style="padding-left:28px"/>
         <span class="dollar-badge">$</span>
       </div>
     </div>
 
-    <button class="go-btn" id="calcBtn" onclick="calculate()" disabled>CALCULATE SHIPPING</button>
+    <button class="go-btn" id="calcBtn" onclick="calculate()" disabled>CALCULAR FRETE</button>
 
-    <!-- Results -->
+    <!-- Resultados -->
     <div id="results">
       <div class="divider"></div>
       <div id="dimNotice"></div>
       <div id="taxNotice"></div>
-      <p class="sans" style="font-size:11px;font-weight:600;color:#002776;letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px">Shipping Options</p>
+      <p class="sans" style="font-size:11px;font-weight:600;color:#002776;letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px">Opções de Envio</p>
       <div id="serviceCards"></div>
       <p class="sans" style="font-size:11px;color:#009C3B;margin-top:8px;text-align:center;line-height:1.6">
-        Retail USPS rates · Service fee is your charge · Import tax subject to Brazilian customs discretion
+        Tarifas USPS de varejo · Taxa de serviço é o valor cobrado · Imposto de importação sujeito à alfândega brasileira
       </p>
     </div>
 
-    <button class="reset-btn" onclick="reset()">Reset</button>
+    <button class="reset-btn" onclick="reset()">Limpar</button>
   </div>
 
   <p class="sans" style="font-size:11px;color:#d4f5e0;text-align:center;margin-top:14px">
-    USPS rates effective July 13 2025 · Brazil Receita Federal §50 threshold
+    Tarifas USPS vigentes a partir de 13 de julho de 2025 · Limite de isenção Receita Federal §50
   </p>
 </div>
 
@@ -144,7 +144,7 @@ function setUnit(u) {
   currentUnit = u;
   document.getElementById('btn-imperial').classList.toggle('active', u==='imperial');
   document.getElementById('btn-metric').classList.toggle('active', u==='metric');
-  const wl = u==='imperial'?'lbs':'kg', dl = u==='imperial'?'in':'cm';
+  const wl = u==='imperial'?'lbs':'kg', dl = u==='imperial'?'pol':'cm';
   document.getElementById('wLabel').textContent = wl;
   document.getElementById('wBadge').textContent = wl;
   document.getElementById('dLabel').textContent = dl;
@@ -196,30 +196,30 @@ function calculate() {
   const pmiPrice   = lookup(PMI, billLbs);
   const pmeiPrice  = lookup(PMEI, billLbs);
 
-  // Dim notice
+  // Aviso de peso dimensional
   let dimHTML = '';
   if (dimApplied) {
-    dimHTML = `<div class="dim-notice">⚠️ <strong>Dimensional weight applies.</strong><br>Actual: ${weightLbs.toFixed(2)} lbs &nbsp;·&nbsp; Dim weight: ${dimLbs.toFixed(2)} lbs<br><strong>Billable weight: ${billLbs.toFixed(2)} lbs (${billOz.toFixed(1)} oz)</strong></div>`;
+    dimHTML = `<div class="dim-notice">⚠️ <strong>Peso dimensional aplicado.</strong><br>Real: ${weightLbs.toFixed(2)} lbs &nbsp;·&nbsp; Dimensional: ${dimLbs.toFixed(2)} lbs<br><strong>Peso cobrável: ${billLbs.toFixed(2)} lbs (${billOz.toFixed(1)} oz)</strong></div>`;
   } else if (dimLbs>0) {
-    dimHTML = `<div class="dim-notice" style="background:#f0f8f0;border-color:#b0d8b0;color:#1a5c1a">✓ Actual weight (${weightLbs.toFixed(2)} lbs) is greater than dim weight (${dimLbs.toFixed(2)} lbs). No surcharge.</div>`;
+    dimHTML = `<div class="dim-notice" style="background:#f0f8f0;border-color:#b0d8b0;color:#1a5c1a">✓ Peso real (${weightLbs.toFixed(2)} lbs) é maior que o dimensional (${dimLbs.toFixed(2)} lbs). Sem acréscimo.</div>`;
   }
   document.getElementById('dimNotice').innerHTML = dimHTML;
 
-  // Tax notice
+  // Aviso de imposto
   let taxHTML = '';
   if (decVal>0) {
     taxHTML = importTax>0
-      ? `<div class="dim-notice" style="background:#fff8f0;border-color:#f0d0a0;color:#7a4400">🏛️ Brazil import tax: 60% on $${(decVal-50).toFixed(0)} above the $50 threshold = $${importTax.toFixed(2)}</div>`
-      : `<div class="dim-notice" style="background:#f0f8f0;border-color:#b0d8b0;color:#1a5c1a">✓ Declared value under $50 — no Brazilian import tax</div>`;
+      ? `<div class="dim-notice" style="background:#fff8f0;border-color:#f0d0a0;color:#7a4400">🏛️ Imposto de importação Brasil: 60% sobre $${(decVal-50).toFixed(0)} acima do limite de $50 = $${importTax.toFixed(2)}</div>`
+      : `<div class="dim-notice" style="background:#f0f8f0;border-color:#b0d8b0;color:#1a5c1a">✓ Valor declarado abaixo de $50 — sem imposto de importação no Brasil</div>`;
   }
   document.getElementById('taxNotice').innerHTML = taxHTML;
 
-  // Service cards
+  // Cards de serviço
   const services = [
-    {name:'First-Class Package Intl', base:fcpisPrice, days:'2–4 weeks', eligible:fcpisPrice!==null,
-     note: billOz>64?'Not eligible — package exceeds 4 lbs (64 oz)':'Max 4 lbs · Under $400 value · Most economical'},
-    {name:'Priority Mail International', base:pmiPrice, days:'6–10 business days', eligible:true, note:'Up to 70 lbs · Includes $200 insurance'},
-    {name:'Priority Mail Express Intl',  base:pmeiPrice, days:'3–5 business days', eligible:true, note:'Fastest · Money-back guarantee · Starts at $62.70'},
+    {name:'First-Class Package Internacional', base:fcpisPrice, days:'2–4 semanas', eligible:fcpisPrice!==null,
+     note: billOz>64?'Não elegível — pacote acima de 4 lbs (64 oz)':'Máx. 4 lbs · Valor abaixo de $400 · Mais econômico'},
+    {name:'Priority Mail Internacional', base:pmiPrice, days:'6–10 dias úteis', eligible:true, note:'Até 70 lbs · Inclui seguro de $200'},
+    {name:'Priority Mail Express Internacional', base:pmeiPrice, days:'3–5 dias úteis', eligible:true, note:'Mais rápido · Garantia de devolução · A partir de $62.70'},
   ];
 
   let cardsHTML = '';
@@ -235,13 +235,13 @@ function calculate() {
         </div>
         <div style="text-align:right">
           <div style="font-size:20px;color:#009C3B;font-weight:bold;letter-spacing:-0.02em">$${total.toFixed(2)}</div>
-          <div class="sans" style="font-size:10px;color:#009C3B">total est.</div>
+          <div class="sans" style="font-size:10px;color:#009C3B">estimativa total</div>
         </div>
       </div>
       ${svc.eligible?`
       <div style="border-top:1px solid #e8f5ee;padding-top:8px">
-        <div class="row"><span class="sans" style="font-size:12px;color:#009C3B">USPS shipping</span><span class="sans" style="font-size:12px;font-weight:500;color:#002776">$${svc.base.toFixed(2)}</span></div>
-        ${importTax>0?`<div class="row"><span class="sans" style="font-size:12px;color:#009C3B">Import tax (est.)</span><span class="sans" style="font-size:12px;font-weight:500;color:#FFDF00;background:#002776;padding:1px 7px;border-radius:4px">$${importTax.toFixed(2)}</span></div>`:''}
+        <div class="row"><span class="sans" style="font-size:12px;color:#009C3B">Frete USPS</span><span class="sans" style="font-size:12px;font-weight:500;color:#002776">$${svc.base.toFixed(2)}</span></div>
+        ${importTax>0?`<div class="row"><span class="sans" style="font-size:12px;color:#009C3B">Imposto de importação (est.)</span><span class="sans" style="font-size:12px;font-weight:500;color:#FFDF00;background:#002776;padding:1px 7px;border-radius:4px">$${importTax.toFixed(2)}</span></div>`:''}
         <p class="sans" style="font-size:11px;color:#009C3B;margin-top:7px;font-style:italic">${svc.note}</p>
       </div>`:''}
     </div>`;
